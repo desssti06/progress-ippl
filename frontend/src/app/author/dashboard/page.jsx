@@ -272,161 +272,227 @@ export default function Home() {
 
   return (
     <>
-      <div className="flex h-screen font-poppins">
-        {/* Sidebar */}
-        <aside
-          className="bg-[#78AED6] w-64 p-5 flex flex-col items-start"
-          style={{ height: "1100px" }} // Mengatur tinggi aside menjadi 100% dari viewport
-        >
-          <div className="text-white mb-5">
-            <img src="/images/etamtest.png" alt="Logo" className="h-auto w-36" />
-          </div>
-         
-          <nav>
-            <ul className="space-y-3">
-              <li className="text-white cursor-pointer bg-[#0B61AA] hover:bg-deepBlue bg-opacity-50 rounded-lg py-2 px-4 min-w-[200px]">
-                <Link legacyBehavior href="/author/dashboard">
-                  <a> Home</a>
-                </Link>
-              </li>
-              <li className="text-white cursor-pointer py-2 px-4 hover:bg-deepBlue  rounded-lg">
-                <Link legacyBehavior href="/author/analisis-soal">
-                  <a> Analisis Soal</a>
-                </Link>
-              </li>
-              <li className="text-white cursor-pointer py-2 px-4 hover:bg-deepBlue  rounded-lg">
-                <Link legacyBehavior href="/my-saldo">
-                  <a> My Saldo</a>
-                </Link>
-              </li>
-            </ul>
-          </nav>
-
-        </aside>
-
-        {/* Main Content */}
-        
-        <main className="flex-1 bg-white">
-          {/* Header */}
-          <header className="flex justify-end items-center bg-[#0B61AA] p-4">
-            <div className="relative flex inline-block items-center ">
-              <div className="mx-auto">
-                <span className="text-xl text-white font-poppins font-bold mr-3">Hai, {userData?.name}</span>
-              </div>
-             {/* Profile */}
-            <div className="relative inline-block">
-              {userData?.userPhoto ? (
-                <img
-                  src={userData.userPhoto}
-                  alt="User Profile"
-                  className="h-14 w-14 rounded-full cursor-pointer mr-5"
-                  onMouseEnter={() => setDropdownOpen(true)}
-                  onMouseLeave={() => setDropdownOpen(false)}
-                />
-              ) : (
-                <IoPersonCircle
-                  className="h-14 w-14 rounded-full cursor-pointer text-white mr-5"
-                  onMouseEnter={() => setDropdownOpen(true)}
-                  onMouseLeave={() => setDropdownOpen(false)}
-                />
-              )}
-
-              {/* Dropdown */}
-              {isDropdownOpen && (
-                <div
-                  className="absolute right-2 mt-0 w-37 bg-white rounded-lg shadow-lg z-10 p-1 
-                  before:content-[''] before:absolute before:-top-4 before:right-8 before:border-8
-                  before:border-transparent before:border-b-white"
-                  onMouseEnter={() => setDropdownOpen(true)}
-                  onMouseLeave={() => setDropdownOpen(false)}
-                >
-                  <Link legacyBehavior href={`/user/edit-profile/${userId}`}>
-                    <a className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md border-abumuda">
-                      Ubah Profil
-                    </a>
-                  </Link>
-                  <Link legacyBehavior href="/auth/login">
-                    <a
-                      onClick={handleLogout}
-                      className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md"
-                    >
-                      Logout
-                    </a>
-                  </Link>
-                </div>
-              )}
+    
+      <div className="flex flex-col h-screen font-poppin">
+        {/* Header */}
+        <header className="flex justify-end items-center bg-[#0B61AA] p-4">
+          <div className="relative flex inline-block items-center ">
+            <div className="mx-auto">
+              <span className="text-xl text-white font-poppins font-bold mr-3">Hai, {userData?.name}</span>
             </div>
-            </div>
-          </header>
+          {/* Profile */}
+          <div className="relative inline-block">
+            {userData?.userPhoto ? (
+              <img
+                src={userData.userPhoto}
+                alt="User Profile"
+                className="h-14 w-14 rounded-full cursor-pointer mr-5 object-cover"
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
+              />
+            ) : (
+              <IoPersonCircle
+                className="h-14 w-14 rounded-full cursor-pointer text-white mr-5"
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
+              />
+            )}
 
-          {/* Search Bar */}
-          <div className="bg-gradient-to-r from-[#CAE6F9] to-[#0B61AA] p-12">
-            <div className="container justify-between mt-10 lg:mt-4 lg:max-w-[610px] max-w-full ">
-                <form 
-                onSubmit={handleSearch} 
-                className="flex items-center p-1 rounded-2xl bg-white w-full font-poppins"
+            {/* Dropdown */}
+            {isDropdownOpen && (
+              <div
+                className="absolute right-2 mt-0 w-37 bg-white rounded-lg shadow-lg z-10 p-1 
+                before:content-[''] before:absolute before:-top-4 before:right-8 before:border-8
+                before:border-transparent before:border-b-white"
+                onMouseEnter={() => setDropdownOpen(true)}
+                onMouseLeave={() => setDropdownOpen(false)}
               >
-                <input 
-                  type="text" 
-                  placeholder="Cari Tes Soal" 
-                  className="flex-grow p-1 lg:p-2  rounded-2xl focus:outline-none focus:ring-2 focus:ring-powderBlue font-poppins max-w-[130px] lg:max-w-[610px]"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button 
-                  type="submit" 
-                  className="p-1 lg:p-2 text-deepBlue font-bold rounded-2xl hover:bg-gray-200 font-poppins "
+                <Link legacyBehavior href={`/author/edit-profile/${userId}`}>
+                  <a className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md border-abumuda">
+                    Ubah Profil
+                  </a>
+                </Link>
+                <Link legacyBehavior href="/auth/login">
+                  <a
+                    onClick={handleLogout}
+                    className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md"
+                  >
+                    Logout
+                  </a>
+                </Link>
+              </div>
+            )}
+          </div>
+          </div>
+        </header>
+        
+        <div className='flex flex-1'>
+          {/* Sidebar */}
+          <aside
+            className="bg-[#78AED6] w-64 p-5 min-h-full fixed top-0 left-0"
+          >
+            <div className="text-white mb-5">
+              <img src="/images/etamtest.png" alt="Logo" className="h-auto w-36" />
+            </div>
+          
+            <nav>
+              <ul className="space-y-3">
+                <li className="text-white cursor-pointer bg-[#0B61AA] hover:bg-deepBlue bg-opacity-50 rounded-lg py-2 px-4 min-w-[200px]">
+                  <Link legacyBehavior href="/author/dashboard">
+                    <a> Home</a>
+                  </Link>
+                </li>
+                <li className="text-white cursor-pointer py-2 px-4 hover:bg-deepBlue  rounded-lg">
+                  <Link legacyBehavior href="/author/analisis-soal">
+                    <a> Analisis Soal</a>
+                  </Link>
+                </li>
+                <li className="text-white cursor-pointer py-2 px-4 hover:bg-deepBlue  rounded-lg">
+                  <Link legacyBehavior href="/author/my-saldo">
+                    <a> My Saldo</a>
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1 bg-white ml-64 overflow-y-auto">
+            {/* Search Bar */}
+            <div className="bg-gradient-to-r from-[#CAE6F9] to-[#0B61AA] p-12">
+              <div className="container justify-between mt-10 lg:mt-4 lg:max-w-[610px] max-w-full ">
+                  <form 
+                  onSubmit={handleSearch} 
+                  className="flex items-center p-1 rounded-2xl bg-white w-full font-poppins"
                 >
-                <FaSearch className="text-xl" />
+                  <input 
+                    type="text" 
+                    placeholder="Cari Tes Soal" 
+                    className="flex-grow p-1 lg:p-2  rounded-2xl focus:outline-none focus:ring-2 focus:ring-powderBlue font-poppins max-w-[130px] lg:max-w-[610px]"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                  <button 
+                    type="submit" 
+                    className="p-1 lg:p-2 text-deepBlue font-bold rounded-2xl hover:bg-gray-200 font-poppins "
+                  >
+                  <FaSearch className="text-xl" />
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            {/* Informasi Total Soal dan Peserta */}
+        
+            <div className="flex pr-4 gap-5 mt-4 ml-3 justify-between">
+              <div className="flex pr-4 gap-5 mt-4 ml-3 ">
+                <div className="bg-[#F3F3F3] px-3 py-1 max-w-auto justify-between item-center rounded-[15px] shadow-lg shadow-lg text-[#0B61AA]">
+                  <span>Total Soal</span>
+                  <span className="font-semibold ml-4">{authorData?.[0]?.totalSoal || 0}</span>
+
+                </div>
+                <div className="bg-[#F3F3F3] px-3 py-1 max-w-auto justify-between item-center rounded-[15px]  shadow-lg text-[#0B61AA]">
+                  <span>Total Peserta</span> 
+                  <span className="font-semibold ml-2">{authorData?.[0]?.totalPeserta || 0}</span>
+                </div>
+              </div>
+              
+              <Link href='/author/buattes'>
+                <button className="bg-deepBlue hover:bg-powderBlue shadow-lg hover:text-deepBlue text-white py-2 mt-2 px-5 p-5 rounded-[10px]">
+                + NEW
                 </button>
-              </form>
+              </Link>
             </div>
-          </div>
+          
+            {/* Bagian Paling Populer */}
+            <section className="mx-auto p-5 font-poppins relative">
+              <div className="mx-auto mt-5 font-bold font-poppins text-deepBlue">
+                Terbaru
+                {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
+                <div className=" mt-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
+                  {authorTests.slice(populercurrentIndex, populercurrentIndex + populeritemsToShow).map((test) => (
+                    <div className="bg-abumuda shadow-lg p-1 relative group">                        
+                        <div className="flex justify-between items-center z-10">
+                          <div className="flex items-center space-x-2 font-bold text-deepBlue">
+                          <FaEye className="text-xs lg:text-base object-contain" /> 
+                            <span className="text-[0.6rem] lg:text-sm font-poppins">{test.history}</span>
+                          </div>
+                        </div>
 
-          {/* Informasi Total Soal dan Peserta */}
-      
-          <div className="flex pr-4 gap-5 mt-4 ml-3 justify-between">
-            <div className="flex pr-4 gap-5 mt-4 ml-3 ">
-              <div className="bg-[#F3F3F3] px-3 py-1 max-w-auto justify-between item-center rounded-[15px] shadow-lg shadow-lg text-[#0B61AA]">
-                <span>Total Soal</span>
-                <span className="font-semibold ml-4">{authorData?.[0]?.totalSoal || 0}</span>
+                        <div className="flex justify-center mt-2 lg:mt-4 ">
+                          <SlBookOpen className="text-4xl lg:text-[80px] object-contain" />
+                        </div>
 
+                        <div className="flex justify-center mt-2 lg:mt-4 text-deepBlue ">
+                          <h3 className="text-center text-[0.8rem] lg:text-lg font-bold mt-0 lg:mt-2 font-poppins">{test.kategori}</h3>
+                        </div>
+
+                        <div className="bg-deepBlue text-white p-1 lg:p-2  mt-4 relative z-20 ">
+                          <div className="flex items-center space-x-2 justify-between">
+                            <h3 className="text-left text-[0.625rem] lg:text-base font-bold mt-2">{test.judul}</h3>
+                          </div>
+
+                          <p className="text-left text-[0.5rem] lg:text-sm leading-relaxed">{test.prediksi_kemiripan}</p>
+                          <p className="text-[0.4rem] lg:text-xs leading-relaxed">Dibuat Oleh:</p>
+
+                          <div className="flex justify-between space-x-2 leading-relaxed mt-1">
+                            <div className="flex text-left space-x-1 lg:space-x-4">
+                              <img src={test.authorProfile} alt= {userData?.name}  className="h-16 w-16 rounded-full object-cover" />
+                              <span className="text-[0.375rem] lg:text-sm font-semibold">{test.author}</span>
+                            </div>
+                            <span className="text-[0.375rem] lg:text-sm font-semibold">
+                              {test.price === 0 ? (
+                                'Gratis'
+                              ) : (
+                                <IoIosLock className="text-sm lg:text-sm inline-block object-contain" />
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tombol panah kiri */}
+                <button
+                  onClick={populerprevSlide}
+                  className={`absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${populercurrentIndex === 0 ? 'hidden' : ''}`}
+                >
+                  &#10094;
+                </button>
+
+                {/* Tombol panah kanan */}
+                <button
+                  onClick={populernextSlide}
+                  className={`absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${populercurrentIndex >= authorTests.length - populeritemsToShow ? 'hidden' : ''}`}
+                >
+                  &#10095;
+                </button>
               </div>
-              <div className="bg-[#F3F3F3] px-3 py-1 max-w-auto justify-between item-center rounded-[15px]  shadow-lg text-[#0B61AA]">
-                <span>Total Peserta</span> 
-                <span className="font-semibold ml-2">{authorData?.[0]?.totalPeserta || 0}</span>
-              </div>
-            </div>
-            
-            <Link href='/author/buattes'>
-              <button className="bg-deepBlue hover:bg-paleBlue shadow-lg hover:text-deepBlue text-white py-2 mt-2 px-5 p-5 rounded-[10px]">
-              + NEW
-              </button>
-            </Link>
-          </div>
-         
-          {/* Bagian Paling Populer */}
-          <section className="mx-auto p-5 font-poppins relative">
-            <div className="mx-auto mt-5 font-bold font-poppins text-deepBlue">
-              Terbaru
-              {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
-              <div className=" mt-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {authorTests.slice(populercurrentIndex, populercurrentIndex + populeritemsToShow).map((test) => (
-                  <div className="bg-abumuda shadow-lg p-1 relative group">
-                    
-                
+            </section>
+
+            {/* Bagian Populer */}
+            <section className="block mx-auto p-5 font-poppins relative">
+              <div className="mx-auto mt-5 font-bold font-poppins text-deepBlue">
+                Populer
+                {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
+                  {authorTests.slice(gratiscurrentIndex, gratiscurrentIndex + gratisitemsToShow).map((test) => (
+                    <div key={test.id} className="bg-abumuda shadow-lg p-1 relative group">
+                      
                       <div className="flex justify-between items-center z-10">
                         <div className="flex items-center space-x-2 font-bold text-deepBlue">
-                        <FaEye className="text-xs lg:text-base object-contain" /> 
-                          <span className="text-[0.6rem] lg:text-sm font-poppins">{test.history}</span>
+                          <FaEye className="text-xs lg:text-base object-contain" />
+                          <span className="text-[0.6rem] lg:text-sm font-poppins">{test.views}</span>
                         </div>
                       </div>
 
-                      <div className="flex justify-center mt-2 lg:mt-4 ">
-                        <SlBookOpen className="text-4xl lg:text-[80px] object-contain" />
+                      <div className="flex justify-center mt-2 lg:mt-4 relative z-20 ">
+                        <SlBookOpen alt={test.kategori} className="text-4xl lg:text-[80px] object-contain" />
                       </div>
 
-                      <div className="flex justify-center mt-2 lg:mt-4 text-deepBlue ">
+                      <div className="flex justify-center mt-2 lg:mt-4 text-deepBlue relative z-20 ">
                         <h3 className="text-center text-[0.8rem] lg:text-lg font-bold mt-0 lg:mt-2 font-poppins">{test.kategori}</h3>
                       </div>
 
@@ -444,101 +510,34 @@ export default function Home() {
                             <span className="text-[0.375rem] lg:text-sm font-semibold">{test.author}</span>
                           </div>
                           <span className="text-[0.375rem] lg:text-sm font-semibold">
-                            {test.price === 0 ? (
-                              'Gratis'
-                            ) : (
-                              <IoIosLock className="text-sm lg:text-sm inline-block object-contain" />
-                            )}
+                            {test.free ? 'Gratis' : <IoIosLock className="text-sm lg:text-sm inline-block object-contain" />}
                           </span>
                         </div>
                       </div>
-                  </div>
-                ))}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Tombol panah kiri */}
+                <button
+                  onClick={gratisprevSlide}
+                  className={`absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${gratiscurrentIndex === 0 ? 'hidden' : ''}`}
+                >
+                  &#10094;
+                </button>
+
+                {/* Tombol panah kanan */}
+                <button
+                  onClick={gratisnextSlide}
+                  className={`absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${gratiscurrentIndex >= authorTests.length - gratisitemsToShow ? 'hidden' : ''}`}
+                >
+                  &#10095;
+                </button>
               </div>
-
-              {/* Tombol panah kiri */}
-              <button
-                onClick={populerprevSlide}
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${populercurrentIndex === 0 ? 'hidden' : ''}`}
-              >
-                &#10094;
-              </button>
-
-              {/* Tombol panah kanan */}
-              <button
-                onClick={populernextSlide}
-                className={`absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${populercurrentIndex >= authorTests.length - populeritemsToShow ? 'hidden' : ''}`}
-              >
-                &#10095;
-              </button>
-            </div>
-          </section>
-
-          {/* Bagian Populer */}
-          <section className="block mx-auto p-5 font-poppins relative">
-            <div className="mx-auto mt-5 font-bold font-poppins text-deepBlue">
-              Populer
-              {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
-                {authorTests.slice(gratiscurrentIndex, gratiscurrentIndex + gratisitemsToShow).map((test) => (
-                  <div key={test.id} className="bg-abumuda shadow-lg p-1 relative group">
-                    
-                    <div className="flex justify-between items-center z-10">
-                      <div className="flex items-center space-x-2 font-bold text-deepBlue">
-                        <FaEye className="text-xs lg:text-base object-contain" />
-                        <span className="text-[0.6rem] lg:text-sm font-poppins">{test.views}</span>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center mt-2 lg:mt-4 relative z-20 ">
-                      <SlBookOpen alt={test.kategori} className="text-4xl lg:text-[80px] object-contain" />
-                    </div>
-
-                    <div className="flex justify-center mt-2 lg:mt-4 text-deepBlue relative z-20 ">
-                      <h3 className="text-center text-[0.8rem] lg:text-lg font-bold mt-0 lg:mt-2 font-poppins">{test.kategori}</h3>
-                    </div>
-
-                    <div className="bg-deepBlue text-white p-1 lg:p-2  mt-4 relative z-20 ">
-                      <div className="flex items-center space-x-2 justify-between">
-                        <h3 className="text-left text-[0.625rem] lg:text-base font-bold mt-2">{test.judul}</h3>
-                      </div>
-
-                      <p className="text-left text-[0.5rem] lg:text-sm leading-relaxed">{test.prediksi_kemiripan}</p>
-                      <p className="text-[0.4rem] lg:text-xs leading-relaxed">Dibuat Oleh:</p>
-
-                      <div className="flex justify-between space-x-2 leading-relaxed mt-1">
-                        <div className="flex text-left space-x-1 lg:space-x-4">
-                          <img src={test.authorProfile} alt={test.kategori} className="h-3 lg:h-5 object-contain" />
-                          <span className="text-[0.375rem] lg:text-sm font-semibold">{test.author}</span>
-                        </div>
-                        <span className="text-[0.375rem] lg:text-sm font-semibold">
-                          {test.free ? 'Gratis' : <IoIosLock className="text-sm lg:text-sm inline-block object-contain" />}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Tombol panah kiri */}
-              <button
-                onClick={gratisprevSlide}
-                className={`absolute left-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${gratiscurrentIndex === 0 ? 'hidden' : ''}`}
-              >
-                &#10094;
-              </button>
-
-              {/* Tombol panah kanan */}
-              <button
-                onClick={gratisnextSlide}
-                className={`absolute right-0 top-1/2 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-200 ${gratiscurrentIndex >= authorTests.length - gratisitemsToShow ? 'hidden' : ''}`}
-              >
-                &#10095;
-              </button>
-            </div>
-          </section>
-        </main>
-       
+            </section>
+          </main>
+        </div>
+         
       </div>
     </>
   );

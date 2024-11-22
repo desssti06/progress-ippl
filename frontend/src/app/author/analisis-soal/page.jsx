@@ -5,12 +5,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import {IoPersonCircle} from "react-icons/io5";
-import {FaRegEye} from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
 import {SlBookOpen} from "react-icons/sl";
 import {CiLock} from "react-icons/ci";
-import {CiSearch} from "react-icons/ci";
-
-
+import { FaSearch } from "react-icons/fa";
+import jwtDecode from 'jwt-decode';
 
 
 export default function Home() {
@@ -26,8 +25,113 @@ export default function Home() {
   const [filteredTests, setFilteredTests] = useState([]);
   const [selectedKategori, setSelectedKategori] = useState('Semua Kategori');
   const [searchTerm, setSearchTerm] = useState('');
+  const [userData, setUserData] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [totalPublish, setTotalPublish] = useState(0);
+  const [totalDraft, setTotalDraft] = useState(0);
+  const [token, setToken] = useState('');
+  const [loadingUser, setLoadingUser] = useState(true);
+  const publishTests = authorTests.filter(test => test.status === 'publish');
+const draftTests = authorTests.filter(test => test.status === 'draft');
 
   
+  useEffect(() => {
+    console.log('Author Tests:', authorTests);
+    const publishCount = authorTests.filter(test => test.status === 'publish').length;
+    const draftCount = authorTests.filter(test => test.status === 'draft').length;
+  
+    setTotalPublish(publishCount);
+    setTotalDraft(draftCount);
+  }, [authorTests]);
+  
+
+  useEffect(() => {
+    const getUserIdFromToken = () => {
+      try {
+        setLoading(true);
+        // Pastikan kode ini hanya dijalankan di sisi klien
+        if (typeof window !== 'undefined') {
+          const token = localStorage.getItem('token');
+          if (!token) {
+            throw new Error('Token tidak ditemukan');
+          }
+
+          const decodedToken = jwtDecode(token);
+          if (!decodedToken.id) {
+            throw new Error('User ID tidak ditemukan dalam token');
+          }
+
+          setUserId(decodedToken.id);
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        setError(error.message);
+        // Redirect ke halaman login jika token tidak valid
+      } finally {
+        setLoading(false);
+      }
+    };
+
+  getUserIdFromToken();
+  }, []);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      let token;
+      if (typeof window !== 'undefined') {
+        token = localStorage.getItem('token');
+      }
+      
+      if (!token) {
+        setErrorUser('Token tidak ditemukan');
+        setLoadingUser(false);
+        return;
+      }
+
+      try {
+        setLoadingUser(true);
+        const response = await fetch('http://localhost:2000/user/profile', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch user data');
+        }
+
+        const data = await response.json();
+        if (data) {
+          setUserData(data);
+        } else {
+          throw new Error('Data pengguna tidak ditemukan');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        setErrorUser('Gagal mengambil data pengguna');
+        if (error.message === 'Failed to fetch user data') {
+          // Token mungkin tidak valid atau kadaluarsa
+          if (typeof window !== 'undefined') {
+            localStorage.removeItem('token');
+          }
+          router.push('/login');
+        }
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    const storedToken = localStorage.getItem('token');
+    if (storedToken) {
+        setToken(storedToken);
+    }
+  }, []);
   
   useEffect(() => {
     const fetchAuthorTests = async () => {
@@ -81,31 +185,11 @@ export default function Home() {
   };
 
 
-  const kategori = [
-    'Semua Tes',
-    'Tes UTBK',
-    'Tes Psikotest',
-    'Tes CPNS',
-    'Tes Pemograman',
-  ];
-
-
   // Fungsi untuk menangani perubahan dropdown
   const handleKategoriChange = (e) => {
     setSelectedKategori(e.target.value);
   };
 
-  
-  const author = [
-    {
-      id : 1,
-      nama : "Desti Nur Irawati",
-      role : "Administrator",
-      publish : 124,
-      draft : 156,
-    }]
-      
-  
   const handleSearch = async (e) => {
     
     e.preventDefault();
@@ -224,43 +308,56 @@ export default function Home() {
         </aside>
 
         {/* Main Content */}
-        {author.map((authorTest, index) => (
+        
         <main className="flex-1 bg-white">
           {/* Header */}
           <header className="flex justify-end items-center bg-[#0B61AA] p-4">
             <div className="relative flex inline-block items-center ">
               <div className="mx-auto">
-                <span className="text-white font-poppins font-bold mr-3">Hai, {authorTest.nama}!</span>
+                <span className="text-white font-poppins font-bold mr-3">Hai,{userData?.name}!</span>
               </div>
-              <div className='hidden lg:block'>
-                <IoPersonCircle
-                  alt="profile" 
-                  className="h-16 w-16 text-white cursor-pointer mr-3"
+              <div className="relative inline-block">
+              {userData?.userPhoto ? (
+                <img
+                  src={userData.userPhoto}
+                  alt="User Profile"
+                  className="h-14 w-14 rounded-full cursor-pointer mr-5 object-cover"
                   onMouseEnter={() => setDropdownOpen(true)}
                   onMouseLeave={() => setDropdownOpen(false)}
                 />
-                {/* Dropdown */}
-                {isDropdownOpen && (
-                  <div 
-                    className="absolute right-0 mt-1 w-35 bg-white rounded-lg shadow-lg z-10 p-1
-                              before:content-[''] before:absolute before:-top-4 before:right-8 before:border-8 
-                              before:border-transparent before:border-b-white"
-                    onMouseEnter={() => setDropdownOpen(true)}
-                    onMouseLeave={() => setDropdownOpen(false)}
-                  >
-                    <Link legacyBehavior href="author/edit-profile">
-                      <a className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md border-abumuda">
-                        Ubah Profil
-                      </a>
-                    </Link>
-                    <Link legacyBehavior href="./auth/login">
-                      <a className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md">
-                        Logout
-                      </a>
-                    </Link>
-                  </div>
-                )}
-              </div>
+              ) : (
+                <IoPersonCircle
+                  className="h-14 w-14 rounded-full cursor-pointer text-white mr-5"
+                  onMouseEnter={() => setDropdownOpen(true)}
+                  onMouseLeave={() => setDropdownOpen(false)}
+                />
+              )}
+
+              {/* Dropdown */}
+              {isDropdownOpen && (
+                <div
+                  className="absolute right-2 mt-0 w-37 bg-white rounded-lg shadow-lg z-10 p-1 
+                  before:content-[''] before:absolute before:-top-4 before:right-8 before:border-8
+                  before:border-transparent before:border-b-white"
+                  onMouseEnter={() => setDropdownOpen(true)}
+                  onMouseLeave={() => setDropdownOpen(false)}
+                >
+                  <Link legacyBehavior href={`/author/edit-profile/${userId}`}>
+                    <a className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md border-abumuda">
+                      Ubah Profil
+                    </a>
+                  </Link>
+                  <Link legacyBehavior href="/auth/login">
+                    <a
+                      onClick={handleLogout}
+                      className="block px-4 py-1 text-deepBlue text-sm text-gray-700 hover:bg-deepBlue hover:text-white rounded-md"
+                    >
+                      Logout
+                    </a>
+                  </Link>
+                </div>
+              )}
+            </div>
             </div>
           </header>
 
@@ -282,7 +379,7 @@ export default function Home() {
                   type="submit" 
                   className="p-1 lg:p-2 text-deepBlue font-bold rounded-2xl hover:bg-gray-200 font-poppins "
                 >
-                  <CiSearch
+                  <FaSearch
                     className="h-5 w-5"
                   />
                 </button>
@@ -293,38 +390,38 @@ export default function Home() {
           {/* Informasi Total Soal dan Peserta */}
       
           <div className="flex items-center pr-4 gap-5 mt-4 ml-3 justify-between">
-    <div className="flex gap-5">
-        <div className="px-3 py-1 text-deepBlue">
-            <span className="ml-2 font-semibold">
-                <span>Kategori:</span>
-                <select
-                    className="ml-2 p-1 rounded-lg bg-abumuda text-deepBlue shadow-lg text-[#0B61AA]"
-                    value={selectedKategori}
-                    onChange={handleKategoriChange}
-                >
-                    {uniqueKategori.map((option, index) => (
-                        <option key={index} value={option}>
-                            {option}
-                        </option>
-                    ))}
-                </select>
-            </span>
+            <div className="flex gap-5">
+                <div className="px-3 py-1 text-deepBlue">
+                    <span className="ml-2 font-semibold">
+                        <span>Kategori:</span>
+                        <select
+                            className="ml-2 p-1 rounded-lg bg-abumuda text-deepBlue shadow-lg text-[#0B61AA]"
+                            value={selectedKategori}
+                            onChange={handleKategoriChange}
+                        >
+                            {uniqueKategori.map((option, index) => (
+                                <option key={index} value={option}>
+                                    {option}
+                                </option>
+                            ))}
+                        </select>
+                    </span>
+                </div>
+                <div className="bg-abumuda px-3 py-2 rounded-[15px] shadow-lg text-[#0B61AA]">
+                    <span>Publish</span>
+                    <span className="font-semibold ml-4">{totalPublish}</span>
+                </div>
+                <div className="bg-abumuda px-3 py-2 rounded-[15px] shadow-lg text-[#0B61AA]">
+                    <span>Draft</span> 
+                    <span className="font-semibold ml-2">{totalDraft}</span>
+                </div>
+            </div>
+            <Link href='/author/buattes'>
+                <button className="bg-[#0B61AA] text-white py-2 px-5 rounded-[10px] ml-auto">
+                    + NEW
+                </button>
+            </Link>
         </div>
-        <div className="bg-abumuda px-3 py-2 rounded-[15px] shadow-lg text-[#0B61AA]">
-            <span>Publish</span>
-            <span className="font-semibold ml-4">{author.publish}</span>
-        </div>
-        <div className="bg-abumuda px-3 py-2 rounded-[15px] shadow-lg text-[#0B61AA]">
-            <span>Draft</span> 
-            <span className="font-semibold ml-2">{author.draft}</span>
-        </div>
-    </div>
-    <Link href='/author/buattes'>
-        <button className="bg-[#0B61AA] text-white py-2 px-5 rounded-[10px] ml-auto">
-            + NEW
-        </button>
-    </Link>
-</div>
 
           {/* Bagian Paling Publish */}
           <section className="mx-auto p-5 font-poppins relative">
@@ -332,13 +429,11 @@ export default function Home() {
               Publish
               {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
               <div className=" mt-5 grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {authorTests.slice(populercurrentIndex, populercurrentIndex + populeritemsToShow).map((test) => (
-                  <div key={test.id} className="bg-abumuda shadow-lg p-1 relative group">
-                    
-                
+              {publishTests.slice(populercurrentIndex, populercurrentIndex + populeritemsToShow).map((test) => (
+                  <div key={test.id} className="bg-abumuda shadow-lg p-1 relative group">               
                       <div className="flex justify-between items-center z-10">
                         <div className="flex items-center space-x-2 font-bold text-deepBlue">
-                          <FaRegEye alt="Views" className="h-3 lg:h-4 object-contain" />
+                          <FaEye alt="Views" className="h-3 lg:h-4 object-contain" />
                           <span className="text-[0.6rem] lg:text-sm font-poppins">{test.history}</span>
                         </div>
                       </div>
@@ -361,7 +456,7 @@ export default function Home() {
 
                         <div className="flex justify-between space-x-2 leading-relaxed mt-1">
                           <div className="flex text-left space-x-1 lg:space-x-4">
-                            <img src={test.authorProfile} alt={test.kategori} className="h-3 lg:h-5 object-contain" />
+                            <img src={test.authorProfile} alt={userData?.name} className="h-3 lg:h-5 object-contain" />
                             <span className="text-[0.375rem] lg:text-sm font-semibold">{test.author}</span>
                           </div>
                           <span className="text-[0.375rem] lg:text-sm font-semibold">
@@ -395,18 +490,18 @@ export default function Home() {
             </div>
           </section>
 
-          {/* Bagian Populer */}
+          {/* Bagian Draft */}
           <section className="block mx-auto p-5 font-poppins relative">
             <div className="mx-auto mt-5 font-bold font-poppins text-deepBlue">
               Draft
               {/* Container untuk kategori, menambahkan grid layout yang konsisten */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-5">
-                {authorTests.slice(gratiscurrentIndex, gratiscurrentIndex + gratisitemsToShow).map((test) => (
+              {draftTests.slice(gratiscurrentIndex, gratiscurrentIndex + gratisitemsToShow).map((test) => (
                   <div key={test.id} className="bg-abumuda shadow-lg p-1 relative group">
                     
                     <div className="flex justify-between items-center z-10">
                       <div className="flex items-center space-x-2 font-bold text-deepBlue">
-                        <FaRegEye alt="Views" className="h-3 lg:h-4 object-contain" />
+                        <FaEye  alt="Views" className="h-3 lg:h-4 object-contain" />
                         <span className="text-[0.6rem] lg:text-sm font-poppins">{test.histori}</span>
                       </div>
                     </div>
@@ -463,7 +558,7 @@ export default function Home() {
             </div>
           </section>
         </main>
-        ))}
+        
       </div>
     </>
   );

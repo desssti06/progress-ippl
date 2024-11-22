@@ -256,7 +256,7 @@ const handleLogout = async () => {
                     <img
                       src={userData.userPhoto}
                       alt="User Profile"
-                      className="h-14 w-14 rounded-full cursor-pointer mr-5"
+                      className="h-14 w-14 rounded-full cursor-pointer mr-5 object-cover"
                       onMouseEnter={() => setDropdownOpen(true)}
                       onMouseLeave={() => setDropdownOpen(false)}
                     />
@@ -348,7 +348,7 @@ const handleLogout = async () => {
                 onClick={() => setFilter("belumVerifikasi")}
                 className={`flex items-center   w-auto   px-4 py-2 text-black rounded-full ${filter === "belumVerifikasi" ? "bg-paleBlue" : "bg-abumuda"}`}
               > 
-                <div className="flex gap-4 justify-between">
+                <div className="flex gap-4 justify-between items-center ">
                 <span>Belum Verifikasi</span>
                 <span>  </span>
                 <span className="text-red-600 font-semibold">{belumVerifikasi}</span>
@@ -358,7 +358,7 @@ const handleLogout = async () => {
                 onClick={() => setFilter("sudahVerifikasi")}
                 className={`flex items-center px-4 py-2 text-black rounded-full ${filter === "sudahVerifikasi" ? "bg-paleBlue" : "bg-abumuda"}`}
                 >
-                 <div className="flex gap-4 justify-between">
+                 <div className="flex gap-4 justify-between items-center ">
                   <span>Sudah Verifikasi </span>
                   <span className="text-red-600 font-semibold "> {sudahVerifikasi}</span>
                   </div>

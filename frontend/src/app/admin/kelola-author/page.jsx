@@ -229,7 +229,7 @@ const handleLogout = async () => {
                     <img
                       src={userData.userPhoto}
                       alt="User Profile"
-                      className="h-14 w-14 rounded-full cursor-pointer mr-5"
+                      className="h-14 w-14 rounded-full cursor-pointer mr-5 object-cover"
                       onMouseEnter={() => setDropdownOpen(true)}
                       onMouseLeave={() => setDropdownOpen(false)}
                     />

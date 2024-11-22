@@ -104,11 +104,11 @@ const BuatTes = () => {
   return (
     <>
     {/* Header dengan Warna Biru Kustom */}
-      <header className="bg-deepBlue text-white p-4 sm:p-6 w-auto h-[80px]">
+      <header className="bg-[#0B61AA] text-white p-4 sm:p-6 w-auto h-[80px]">
         <div className="container  flex items-center">
           <div className="flex space-x-4 w-full">
-            <Link href="/author/dashboard">
-              <img src="/images/etamtest.png" alt="EtamTest" className="h-6 sm:h-9 absolute left-16 absolute top-5" // Gunakan positioning absolute untuk posisi kiri
+            <Link href="/homeAuthor">
+              <img src="/images/Vector.png" alt="Vector" className=" h-6 sm:h-9 absolute left-16 absolute top-5" // Gunakan positioning absolute untuk posisi kiri
                 style={{ maxWidth: '279px' }} />
             </Link>
           </div>

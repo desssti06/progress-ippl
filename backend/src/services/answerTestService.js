@@ -213,12 +213,22 @@ export const submitFinalAnswers = async (resultId, token) => {
             data: { score: totalScore },
         });
 
+        // 6. Tambahkan entri ke tabel History
+        await prismaClient.history.create({
+            data: {
+                testId: existingResult.testId,
+                userId,
+            },
+        });
+
         return updatedResult;
     } catch (error) {
         console.error('Gagal memproses submit jawaban final:', error);
         throw new Error(`Gagal mengirim jawaban final: ${error.message}`);
     }
 };
+
+
 
 
 

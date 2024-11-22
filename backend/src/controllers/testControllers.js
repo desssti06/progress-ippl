@@ -1,4 +1,4 @@
-import { createTestService, getTestService, getTestResult, getAuthorTestsService} from '../services/testServices.js'; // Pastikan menggunakan ekstensi .js
+import { createTestService, getTestService, getTestResult, getAllTestsService, getTestsByCategory, getAuthorTestsService, publishTestService} from '../services/testServices.js'; // Pastikan menggunakan ekstensi .js
 
 const createTest = async (req, res) => {
     try {
@@ -48,12 +48,6 @@ const testResultController = async (req, res) => {
     }
   };
   
-
-// backend/src/controllers/discussionController.js
-
-
-//import { createTestService, getTestsByCategory, getAllTestsService, publishTestService } from 'backend/src/services/testServices.js';
-
 // Buat tes
 const createTestController = async (req, res, next) => {
     const { authorId, type, category, title, testDescription } = req.body;
@@ -128,22 +122,19 @@ const fetchTestsByCategory = async (req, res, next) => {
     }
 };
 
-
-
 export const getAuthorTests = async (req, res) => {
-  try {
-    // Assuming the middleware adds the user object to the request
-    const userId = req.user.id;
-    const tests = await getAuthorTestsService(userId);
-    res.json(tests);
-  } catch (error) {
-    res.status(500).json({ message: 'Error fetching tests', error: error.message });
-  }
-};
-
+    try {
+      // Assuming the middleware adds the user object to the request
+      const userId = req.user.id;
+      const tests = await getAuthorTestsService(userId);
+      res.json(tests);
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching tests', error: error.message });
+    }
+  };
+  
 
 export { createTest , getTest, testResultController, createTestController,
     publishTestController,
     getAllTests,
     fetchTestsByCategory}; // Menggunakan named
-
